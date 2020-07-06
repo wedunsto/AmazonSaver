@@ -1,5 +1,6 @@
 package com.example.amazonsaver;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,32 +15,33 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ConnectToAmazon extends AppCompatActivity {
+    private String resultsUrl; //Store the Amazon search result URL
+    private ArrayList<ParseItem> parseItems; //Store the collection of ParseItems
 
-    public Document doc; //Variable used to connect to Amazon website
-    private GatherUserData gatherUserData; ////Object used to get data from user
-
-    public ConnectToAmazon(){ //Class constructor to get URL and connect to Amazon
-        doc = null; //create empty Document variable
-        gatherUserData = new GatherUserData();
+    public ConnectToAmazon(String resultsUrl, ArrayList<ParseItem> parseItems){ //Class constructor to get URL and connect to Amazon
+        this.resultsUrl = resultsUrl;
+        this.parseItems = parseItems;
     }
 
-    public void ConnectAndParseAmazon(String resultsUrl){ //Parse Amazon url
-        final String url = resultsUrl; //Store the Amazon results URL
-        final StringBuilder results = new StringBuilder(); //create a string to hold all resulting parses
-
+    public void ConnectAndParseAmazon(){ //Parse Amazon url
         new Thread(new Runnable() { //Create a new Thread to run URL
             @Override
             public void run() {
                 try {
-                    Document doc = Jsoup.connect(url).get(); //Connect to Amazon website
-                    Elements links = doc.select("a[href]"); //Parse url using cssQuery
-                    for(Element link : links){ //Append parse results to string
-                        results.append(link.attr("href")+"\n");
+                    Document doc = Jsoup.connect(resultsUrl).get(); //Connect to Amazon website
+                    Elements links = doc.select("div.sg-col-inner"); //Parse url using cssQuery
+                    int size = links.size(); //Stores the number of search results
+                    for(int i=0; i<size; i++){
+                        String imgUrl = links.select("div.sg-col-inner").select("img").eq(i).attr("src"); //Store each result's image
+                        String title = links.select("h2.a-size-mini a-spacing-none a-color-base s-line-clamp-4").select("span").eq(i).text(); //Store each result's title
+                        parseItems.add(new ParseItem(imgUrl,title)); //Add each search result image and title to ArrayList
+                       //Log.d("debug", imgUrl+" "+title);
                     }
                 } catch (IOException e) {
-                    results.append(e.getMessage()+"\n");
+                   Log.d("debug",e.getMessage());
                 }
             }
         }).start(); //Start new Thread

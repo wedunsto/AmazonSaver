@@ -43,12 +43,12 @@ public class ParseAdapter extends RecyclerView.Adapter<ParseAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private ImageView imageView; //Connect to Card ImageView
-        private TextView textView; //Connect to Card TextView
+        ImageView imageView; //Connect to Card ImageView
+        TextView textView; //Connect to Card TextView
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemView = itemView.findViewById(R.id.imageView);
+            imageView = itemView.findViewById(R.id.imageView);
             textView = itemView.findViewById(R.id.textView);
         }
     }
