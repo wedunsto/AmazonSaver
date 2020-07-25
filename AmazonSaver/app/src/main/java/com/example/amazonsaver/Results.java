@@ -63,7 +63,9 @@ public class Results extends AppCompatActivity {
                     String imgUrl = links.select("img.s-image").eq(i).attr("src"); //Store each result's image
                     String title = links.select("h2").eq(i).text(); //Store each result's title
                     String productUrl = productUrls.eq(i).select("a.a-link-normal").attr("abs:href");//Stores the URL to the product
-                    parseItems.add(new ParseItem(imgUrl,title,productUrl)); //Add each search result image and title to ArrayList
+                    String price = links.select("span.a-offscreen").eq(i).text(); //Store each result's price
+                    ParseItem result = new ParseItem(imgUrl,title,productUrl,price); // Stores each search result
+                    parseItems.add(result); //Add each search result image and title to ArrayList
                 }
             } catch (IOException e) {
                 Log.d("debug",e.getMessage());
