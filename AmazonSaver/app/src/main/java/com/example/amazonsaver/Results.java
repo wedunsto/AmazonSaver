@@ -53,16 +53,13 @@ public class Results extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             try {
                 Document doc = Jsoup.connect(url).get(); //Connect to Amazon website
-                Elements links = doc.select("div.sg-col-inner"); //Parse url using cssQuery
+                Elements links = doc.select("div.s-main-slot.s-result-list.s-search-results.sg-row > " +
+                        "div.sg-col-4-of-24.sg-col-4-of-12.sg-col-4-of-36.s-result-item.s-asin.sg-col-4-of-28.sg-col-4-of-16.sg-col.sg-col-4-of-20.sg-col-4-of-32"); //Parse url using cssQuery
                 int size = links.size(); //Stores the number of search results
-                Elements productUrls = links; //Parse url using cssQuery
-                for(int j=0; j<4;j++){
-                    productUrls.remove(0); //Remove element used in UI
-                }
                 for(int i=0; i<size; i++){
                     String imgUrl = links.select("img.s-image").eq(i).attr("src"); //Store each result's image
                     String title = links.select("h2").eq(i).text(); //Store each result's title
-                    String productUrl = productUrls.eq(i).select("a.a-link-normal").attr("abs:href");//Stores the URL to the product
+                    String productUrl = links.eq(i).select("a.a-link-normal.s-no-outline").attr("abs:href");//Stores the URL to the product
                     String price = links.select("span.a-offscreen").eq(i).text(); //Store each result's price
                     ParseItem result = new ParseItem(imgUrl,title,productUrl,price); // Stores each search result
                     parseItems.add(result); //Add each search result image and title to ArrayList
